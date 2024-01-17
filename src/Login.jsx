@@ -9,6 +9,13 @@ if (jwt) {
 export function Login() {
   const [errors, setErrors] = useState([]);
 
+  const userid = localStorage.getItem("user_id");
+
+  if (userid) {
+    // If userid return null or an alternative component
+    return null;
+  }
+
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors([]);
@@ -19,6 +26,7 @@ export function Login() {
         console.log(response.data);
         axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.jwt;
         localStorage.setItem("jwt", response.data.jwt);
+        localStorage.setItem("user_id", response.data.jwt);
         event.target.reset();
         window.location.href = "/"; // Change this to hide a modal, redirect to a specific page, etc.
       })

@@ -2,6 +2,13 @@
 import { useEffect } from "react";
 
 export function Grid(props) {
+  const userid = localStorage.getItem("user_id");
+
+  if (!userid) {
+    // If userid return null or an alternative component
+    return null;
+  }
+
   useEffect(props.onIndexSquares, []);
 
   return (
