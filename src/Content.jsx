@@ -6,6 +6,7 @@ import { Signup } from "./Signup";
 import axios from "axios";
 import { useState } from "react";
 import { Grid } from "./Grid";
+import { Routes, Route } from "react-router-dom";
 
 export function Content() {
   const [grids, setGrids] = useState([]);
@@ -26,15 +27,23 @@ export function Content() {
     });
   };
 
+  let homepage = (
+    <div>
+      <Login />
+      <Signup />
+      <GridsIndex grids={grids} />
+      <LogoutLink />
+    </div>
+  );
+
   useEffect(handleGridsIndex, []);
   return (
     <main>
       <h1>Welcome to superb-owl !</h1>
-      <Login />
-      <Signup />
-      <GridsIndex grids={grids} />
-      <Grid squares={squares} onIndexSquares={handleIndexSquares} />
-      <LogoutLink />
+      <Routes>
+        <Route path="/" element={homepage} />
+        <Route path="/grid" element={<Grid squares={squares} onIndexSquares={handleIndexSquares} />} />
+      </Routes>
     </main>
   );
 }
