@@ -5,6 +5,8 @@ import { LogoutLink } from "./Logout";
 import { Signup } from "./Signup";
 import axios from "axios";
 import { useState } from "react";
+import { Grid } from "./Grid";
+
 export function Content() {
   const [grids, setGrids] = useState([]);
   const handleGridsIndex = () => {
@@ -15,6 +17,15 @@ export function Content() {
     });
   };
 
+  const [squares, setSquares] = useState([]);
+
+  const handleIndexSquares = () => {
+    axios.get("http://localhost:3000/squares.json", { params: { grid_id: 14 } }).then((response) => {
+      console.log(response.data);
+      setSquares(response.data);
+    });
+  };
+
   useEffect(handleGridsIndex, []);
   return (
     <main>
@@ -22,6 +33,7 @@ export function Content() {
       <Login />
       <Signup />
       <GridsIndex grids={grids} />
+      <Grid squares={squares} onIndexSquares={handleIndexSquares} />
       <LogoutLink />
     </main>
   );
