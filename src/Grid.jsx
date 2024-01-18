@@ -27,6 +27,18 @@ export function Grid(props) {
       });
   };
 
+  const handleClick = (item) => {
+    axios
+      .delete(`http://localhost:3000/squares/${item.id}.json`)
+      .then((response) => {
+        console.log(response);
+        props.onIndexSquares(pageparams.id);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const sortedSquares = [...props.squares].sort((a, b) => a.id - b.id);
 
   return (
@@ -37,6 +49,7 @@ export function Grid(props) {
           <div key={item.id} className="grid-item">
             <button onClick={() => handleUpdateSquare(item)}>{item.location}</button>
             <p>{item.user_id && item.user_id.username}</p>
+            {userid == item.user_id.id ? <button onClick={() => handleClick(item)}>Remove Name</button> : <></>}
           </div>
         ))}
       </div>
