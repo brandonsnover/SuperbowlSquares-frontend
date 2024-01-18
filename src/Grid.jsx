@@ -19,6 +19,7 @@ export function Grid(props) {
         user_id: userid,
       })
       .then((response) => {
+        console.log(response);
         props.onIndexSquares(pageparams.id);
       })
       .catch((error) => {
@@ -26,14 +27,16 @@ export function Grid(props) {
       });
   };
 
+  const sortedSquares = [...props.squares].sort((a, b) => a.id - b.id);
+
   return (
     <div>
       <h1>Grid Name</h1>
       <div className="grid-container">
-        {props.squares.map((item) => (
+        {sortedSquares.map((item) => (
           <div key={item.id} className="grid-item">
             <button onClick={() => handleUpdateSquare(item)}>{item.location}</button>
-            <p>{item.user_id.username}</p>
+            <p>{item.user_id && item.user_id.username}</p>
           </div>
         ))}
       </div>
