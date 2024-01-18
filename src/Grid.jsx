@@ -1,9 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 
 export function Grid(props) {
-  useEffect(props.onIndexSquares, []);
+  const pageparams = useParams();
+
+  useEffect(() => {
+    props.onIndexSquares(pageparams.id);
+  }, []);
 
   return (
     <div>
