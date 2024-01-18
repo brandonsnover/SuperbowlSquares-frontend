@@ -20,8 +20,8 @@ export function Content() {
 
   const [squares, setSquares] = useState([]);
 
-  const handleIndexSquares = () => {
-    axios.get("http://localhost:3000/squares.json", { params: { grid_id: 14 } }).then((response) => {
+  const handleIndexSquares = (id) => {
+    axios.get("http://localhost:3000/squares.json", { params: { grid_id: id } }).then((response) => {
       console.log(response.data);
       setSquares(response.data);
     });
@@ -42,7 +42,7 @@ export function Content() {
       <h1>Welcome to superb-owl !</h1>
       <Routes>
         <Route path="/" element={homepage} />
-        <Route path="/grid" element={<Grid squares={squares} onIndexSquares={handleIndexSquares} />} />
+        <Route path="/grid/:id" element={<Grid squares={squares} onIndexSquares={handleIndexSquares} />} />
       </Routes>
     </main>
   );
