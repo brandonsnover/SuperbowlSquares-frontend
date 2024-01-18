@@ -1,12 +1,19 @@
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 16px;
+  grid-template-columns: repeat(11, 1fr);
+  gap: 16px; 
 }
+
 
 .grid-item {
   padding: 16px;
   border: 1px solid #ddd;
   border-radius: 8px;
   text-align: center;
+  min-width: 80px;
+  min-height: 18px;
+
 }
+
+
+
