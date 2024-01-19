@@ -10,6 +10,19 @@ export function Grid(props) {
   const [gridInfo, setGridInfo] = useState({});
   const [numbersColumn, setNumbersColumn] = useState([]);
   const [numbersRow, setNumbersRow] = useState([]);
+  const [showNumbersColumn, setShowNumbersColumn] = useState(false);
+
+  useEffect(() => {
+    props.onIndexSquares(pageparams.id);
+
+    // Check the current date and time
+    const currentTime = new Date();
+    const targetTime = new Date("2024-02-11T18:30:00"); // February 11, 2024, 6:30 PM
+
+    if (currentTime > targetTime) {
+      setShowNumbersColumn(true);
+    }
+  }, []);
 
   const handleUpdateSquare = (item) => {
     console.log("update square", item.id);
@@ -69,7 +82,7 @@ export function Grid(props) {
         <div className="grid-container">
           {numbersRow.map((number) => (
             <div key={number}>
-              <p className="grid-item">{number}</p>
+              {showNumbersColumn ? <p className="grid-item">{number}</p> : <p className="grid-item"></p>}
             </div>
           ))}
         </div>
@@ -77,7 +90,11 @@ export function Grid(props) {
           {sortedSquares.map((item, index) => (
             <div key={item.id} className="grid-item">
               {index % 11 === 0 ? (
-                <p>{numbersColumn[index / 11]}</p>
+                showNumbersColumn ? (
+                  <p> {numbersColumn[index / 11]}</p>
+                ) : (
+                  <> </>
+                )
               ) : (
                 <>
                   <button onClick={() => handleUpdateSquare(item)}>{item.location}</button>
