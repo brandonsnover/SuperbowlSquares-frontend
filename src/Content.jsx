@@ -10,6 +10,7 @@ import { Routes, Route } from "react-router-dom";
 
 export function Content() {
   const [grids, setGrids] = useState([]);
+
   const handleGridsIndex = () => {
     console.log("handleGridsIndex");
     axios.get("http://localhost:3000/grids.json").then((response) => {
