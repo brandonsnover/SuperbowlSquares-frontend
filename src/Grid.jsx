@@ -1,16 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
 export function Grid(props) {
   const pageparams = useParams();
   const userid = localStorage.getItem("user_id");
-
-  useEffect(() => {
-    props.onIndexSquares(pageparams.id);
-  }, []);
+  const [gridInfo, setGridInfo] = useState({});
+  const [numbersColumn, setNumbersColumn] = useState([]);
+  const [numbersRow, setNumbersRow] = useState([]);
 
   const handleUpdateSquare = (item) => {
     console.log("update square", item.id);
@@ -38,8 +37,24 @@ export function Grid(props) {
         console.error(error);
       });
   };
-  const numbers = [" ", 0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  const numbers_column = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  const handleGridInfo = (id) => {
+    axios.get(`http://localhost:3000/grids/${id}.json`).then((response) => {
+      setGridInfo(response.data);
+      setNumbersColumn(response.data.columns_digit.toString().split(""));
+      let numbers = response.data.rows_digit.toString().split("");
+      numbers.unshift("");
+      setNumbersRow(numbers);
+    });
+  };
+
+  useEffect(() => {
+    handleGridInfo(pageparams.id);
+  }, []);
+
+  useEffect(() => {
+    props.onIndexSquares(pageparams.id);
+  }, []);
 
   const sortedSquares = [...props.squares].sort((a, b) => a.id - b.id);
 
@@ -49,10 +64,10 @@ export function Grid(props) {
   console.log(sortedSquares);
   return (
     <div>
-      <h1>Grid Name</h1>
+      <h1>{gridInfo.name}</h1>
       <div>
         <div className="grid-container">
-          {numbers.map((number) => (
+          {numbersRow.map((number) => (
             <div key={number}>
               <p className="grid-item">{number}</p>
             </div>
@@ -62,7 +77,7 @@ export function Grid(props) {
           {sortedSquares.map((item, index) => (
             <div key={item.id} className="grid-item">
               {index % 11 === 0 ? (
-                <p>{numbers_column[index / 11]}</p>
+                <p>{numbersColumn[index / 11]}</p>
               ) : (
                 <>
                   <button onClick={() => handleUpdateSquare(item)}>{item.location}</button>
