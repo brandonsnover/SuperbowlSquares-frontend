@@ -76,7 +76,7 @@ export function Grid(props) {
   }
   console.log(sortedSquares);
   return (
-    <div>
+    <div className="grid-padding">
       <h1>{gridInfo.name}</h1>
       <div>
         <div className="grid-container">
