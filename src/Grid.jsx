@@ -88,7 +88,7 @@ export function Grid(props) {
   }
   console.log(sortedSquares);
   return (
-    <div>
+    <div className="grid-padding">
       <h1>{gridInfo.name}</h1>
       <h3>{gridInfo.code}</h3>
       {showNumbersColumn ? <p>Winner is: {objectWithLocation.user_id.username}</p> : <></>}

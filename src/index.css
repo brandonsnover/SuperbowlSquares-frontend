@@ -1,19 +1,73 @@
+@font-face {
+  font-family: 'College1';
+  src: url('./assets/COLLEGE-webfont.woff') format('woff'); /* Modern Browsers */
+  font-weight: bold;
+  font-style: normal;
+}
+
+
 .grid-container {
   display: grid;
   grid-template-columns: repeat(11, 1fr);
-  gap: 16px; 
+}
+
+.grid-padding {
+  margin: 20px;
 }
 
 
 .grid-item {
   padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  border: 6px solid #ddd;
+  border-radius: 10px;
   text-align: center;
   min-width: 80px;
   min-height: 18px;
+  border-image: url('./assets/whitegrass.jpeg') repeat 80;
+  margin: 10px;
+}
 
+body {
+  /* position: relative; */
+  background-image: url("./assets/Homepage_FieldturfNZ2.jpg");
+  background-color: #cccccc;
+  color: white;
+  font-family: 'College1';
+}
+
+/* body::before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: -1;
+} */
+
+
+
+button {
+  padding: auto;
+  border-radius: 40px;
+  color: white;
+  background-color: transparent;
+  font-family: 'college1';
+  border-image: url('./assets/whitegrass.jpeg') repeat 80;
 }
 
 
+a {
+  font-family: 'college1', sans-serif; 
+  color: white; 
+  text-decoration: none; 
+  font-weight: bold; 
+}
 
+
+a:hover, a:focus {
+  text-decoration: underline; 
+  
+}
