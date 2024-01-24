@@ -11,6 +11,7 @@ export function Grid(props) {
   const [numbersColumn, setNumbersColumn] = useState([]);
   const [numbersRow, setNumbersRow] = useState([]);
   const [showNumbersColumn, setShowNumbersColumn] = useState(false);
+  const sortedSquares = [...props.squares].sort((a, b) => a.id - b.id);
 
   useEffect(() => {
     props.onIndexSquares(pageparams.id);
@@ -61,6 +62,19 @@ export function Grid(props) {
     });
   };
 
+  const winningRow = 0;
+  const winningColumn = 0;
+
+  const lastDigitOfWinningColumn = winningColumn.toString().slice(-1);
+  const lastDigitOfWinningRow = winningRow.toString().slice(-1);
+
+  const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
+  const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
+
+  const winningSquare = colIndex * 10 + rowIndex;
+
+  const objectWithLocation = sortedSquares.find((obj) => obj.location === winningSquare);
+
   useEffect(() => {
     handleGridInfo(pageparams.id);
   }, []);
@@ -69,8 +83,6 @@ export function Grid(props) {
     props.onIndexSquares(pageparams.id);
   }, []);
 
-  const sortedSquares = [...props.squares].sort((a, b) => a.id - b.id);
-
   for (let i = 0; i < sortedSquares.length; i += 11) {
     sortedSquares.splice(i, 0, { id: 9999 + i, location: i / 11, user_id: 1, grid_id: parseInt(pageparams.id) });
   }
@@ -78,6 +90,8 @@ export function Grid(props) {
   return (
     <div className="grid-padding">
       <h1>{gridInfo.name}</h1>
+      <h3>{gridInfo.code}</h3>
+      {showNumbersColumn ? <p>Winner is: {objectWithLocation.user_id.username}</p> : <></>}
       <div>
         <div className="grid-container">
           {numbersRow.map((number) => (

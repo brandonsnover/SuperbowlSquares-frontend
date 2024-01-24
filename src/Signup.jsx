@@ -38,7 +38,7 @@ export function Signup() {
       </ul>
       <form onSubmit={handleSubmit}>
         <div>
-          Username: <input name="name" type="text" />
+          Username: <input name="username" type="text" />
         </div>
         <div>
           Email: <input name="email" type="email" />

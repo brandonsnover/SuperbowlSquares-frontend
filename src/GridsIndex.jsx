@@ -28,6 +28,15 @@ export function GridsIndex(props) {
           <button onClick={() => goToGrid(grid.id)}>Go To {grid.name}</button>
         </div>
       ))}
+      <h1>Owned Grids</h1>
+      {props.ownedGrids.map((grid) => (
+        <div key={grid.id}>
+          <h3>Grid: {grid.name}</h3>
+          <h3>Code: {grid.code}</h3>
+          <button onClick={() => goToGrid(grid.id)}>Go To {grid.name}</button>
+          <button onClick={() => props.onDeleteGrid(grid)}>Delete Grid</button>
+        </div>
+      ))}
       <form onSubmit={handleCreateGrid}>
         <h4>Make a new grid</h4>
         <div>
