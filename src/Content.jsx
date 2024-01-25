@@ -9,21 +9,22 @@ import { Grid } from "./Grid";
 import { Routes, Route } from "react-router-dom";
 
 export function Content() {
-  const [grids, setGrids] = useState([]);
+  const [hasSquareGrids, setHasSquareGrids] = useState([]);
   const [ownedGrids, setOwnedGrids] = useState([]);
 
-  const handleGridsIndex = () => {
-    console.log("handleGridsIndex");
+  const handleHasSquareGridsIndex = () => {
+    const userId = parseInt(localStorage.getItem("user_id"), 10);
     axios.get("http://localhost:3000/grids.json").then((response) => {
-      console.log(response.data);
-      setGrids(response.data);
+      const hasSquareGrids = response.data.filter((grid) => grid.users.includes(userId));
+      setHasSquareGrids(hasSquareGrids);
     });
   };
 
   const handleOwnedGridsIndex = () => {
-    axios.get("http://localhost:3000/ownergrids.json").then((response) => {
-      console.log(response.data);
-      setOwnedGrids(response.data);
+    const userId = parseInt(localStorage.getItem("user_id"), 10);
+    axios.get("http://localhost:3000/grids.json").then((response) => {
+      const ownedGrids = response.data.filter((grid) => grid.owner === userId);
+      setOwnedGrids(ownedGrids);
     });
   };
 
@@ -40,7 +41,7 @@ export function Content() {
     axios.delete(`http://localhost:3000/grids/${ownedGrid.id}.json`).then((response) => {
       console.log(response);
       setOwnedGrids(ownedGrids.filter((g) => g.id !== ownedGrid.id));
-      setGrids(grids.filter((g) => g.id !== ownedGrid.id));
+      setHasSquareGrids(hasSquareGrids.filter((g) => g.id !== ownedGrid.id));
     });
   };
 
@@ -48,13 +49,13 @@ export function Content() {
     <div>
       <Login />
       <Signup />
-      <GridsIndex grids={grids} ownedGrids={ownedGrids} onDeleteGrid={handleDeleteGrid} />
+      <GridsIndex ownedGrids={ownedGrids} hasSquareGrids={hasSquareGrids} onDeleteGrid={handleDeleteGrid} />
       <LogoutLink />
     </div>
   );
 
+  useEffect(handleHasSquareGridsIndex, []);
   useEffect(handleOwnedGridsIndex, []);
-  useEffect(handleGridsIndex, []);
   return (
     <main>
       <h1>Welcome to superb-owl !</h1>
