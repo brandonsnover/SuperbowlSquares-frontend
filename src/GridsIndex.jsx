@@ -21,8 +21,13 @@ export function GridsIndex(props) {
 
   return (
     <div>
-      <h1>All Grids</h1>
-      {props.grids.map((grid) => (
+      <h4>Enter grid code:</h4>
+      <div>
+        <input type="text" name="code" />
+        <button type="submit">Go </button>
+      </div>
+      <h1>Your Grids</h1>
+      {props.hasSquareGrids.map((grid) => (
         <div key={grid.id}>
           <h3>Grid: {grid.name}</h3>
           <button onClick={() => goToGrid(grid.id)}>Go To {grid.name}</button>
