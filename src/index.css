@@ -1,8 +1,9 @@
 @font-face {
   font-family: 'College1';
-  src: url('./assets/COLLEGE-webfont.woff') format('woff'); /* Modern Browsers */
+  src: url('./assets/Freshman.woff') format('woff'); /* Modern Browsers */
   font-weight: bold;
   font-style: normal;
+  font-kerning: normal;
 }
 
 
@@ -69,5 +70,48 @@ a {
 
 a:hover, a:focus {
   text-decoration: underline; 
-  
+}
+
+button:hover {
+  transform: translate(0px, 5px);
+  -webkit-transform: scale(1.1);
+  box-shadow: 0px 1px 0px 0px;
+}    
+
+.centered {
+  text-align: center;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.nav-home, .nav-search, .nav-logout {
+  margin-right: 20px; /* Adjust the spacing as needed */
+}
+
+/* Remove margin from the last element */
+.nav-logout {
+  margin-right: 0;
+}
+
+#login {
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#signup {
+  width: 95%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+hr {
+  color: url('./assets/whitegrass.jpeg') repeat 80;
 }
