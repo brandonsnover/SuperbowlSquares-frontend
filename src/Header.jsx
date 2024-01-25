@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { LogoutLink } from "./Logout";
 
 export function Header() {
   const [code, setCode] = useState("");
@@ -30,9 +31,15 @@ export function Header() {
       <nav>
         <a href="/">Home</a>
         <form onSubmit={handleSubmit}>
-          <input type="text" value={code} onChange={(e) => setCode(e.target.value)} placeholder="Enter grid code" />
+          <input
+            type="text"
+            value={code}
+            onChange={(e) => setCode(e.target.value)}
+            placeholder=" Enter Invite Code Here "
+          />
           <button type="submit">Search</button>
         </form>
+        <LogoutLink />
       </nav>
     </header>
   );
