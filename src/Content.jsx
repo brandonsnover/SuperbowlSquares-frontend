@@ -1,7 +1,6 @@
 import { useEffect } from "react";
 import { GridsIndex } from "./GridsIndex";
 import { Login } from "./Login";
-import { LogoutLink } from "./Logout";
 import { Signup } from "./Signup";
 import axios from "axios";
 import { useState } from "react";
@@ -47,10 +46,10 @@ export function Content() {
 
   let homepage = (
     <div>
+      <h1>Welcome to superb-owl !</h1>
       <Login />
       <Signup />
       <GridsIndex ownedGrids={ownedGrids} hasSquareGrids={hasSquareGrids} onDeleteGrid={handleDeleteGrid} />
-      <LogoutLink />
     </div>
   );
 
@@ -58,7 +57,6 @@ export function Content() {
   useEffect(handleOwnedGridsIndex, []);
   return (
     <main>
-      <h1>Welcome to superb-owl !</h1>
       <Routes>
         <Route path="/" element={homepage} />
         <Route path="/grid/:id" element={<Grid squares={squares} onIndexSquares={handleIndexSquares} />} />
