@@ -6,6 +6,7 @@ import axios from "axios";
 import { useState } from "react";
 import { Grid } from "./Grid";
 import { Routes, Route } from "react-router-dom";
+import { Rules } from "./Rules";
 
 export function Content() {
   const [hasSquareGrids, setHasSquareGrids] = useState([]);
@@ -60,6 +61,7 @@ export function Content() {
       <Routes>
         <Route path="/" element={homepage} />
         <Route path="/grid/:id" element={<Grid squares={squares} onIndexSquares={handleIndexSquares} />} />
+        <Route path="/rules" element={<Rules />} />
       </Routes>
     </main>
   );
