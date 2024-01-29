@@ -2,6 +2,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LogoutLink } from "./Logout";
+import { Link } from "react-router-dom";
 
 export function Header() {
   const [code, setCode] = useState("");
@@ -30,6 +31,7 @@ export function Header() {
     <header>
       <nav>
         <a href="/">Home</a>
+        <Link to="/rules">Rules</Link>
         <form onSubmit={handleSubmit}>
           <input
             type="text"

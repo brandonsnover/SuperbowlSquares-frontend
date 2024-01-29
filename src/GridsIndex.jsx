@@ -22,29 +22,32 @@ export function GridsIndex(props) {
   return (
     <div className="lists-container">
       <h1 className="grids-with-squares">Grids With Squares</h1>
-      {props.hasSquareGrids.map((grid) => (
-        <div key={grid.id}>
-          <h2>Grid: {grid.name}</h2>
-          <h4>Invite Code: {grid.code}</h4>
-          <button style={{ marginLeft: 10 }} onClick={() => goToGrid(grid.id)}>
-            Go To {grid.name}
-          </button>
-        </div>
-      ))}
-      <hr width="100%" size="2"></hr>
+      <div className="grid-container-home">
+        {props.hasSquareGrids.map((grid) => (
+          <div className="grid-item-home" key={grid.id}>
+            <h2>Grid: {grid.name}</h2>
+            <h4>Invite Code: {grid.code}</h4>
+            <button style={{ marginLeft: 10 }} onClick={() => goToGrid(grid.id)}>
+              Go To {grid.name}
+            </button>
+          </div>
+        ))}
+      </div>
       <h1 className="owned-grids">Owned Grids</h1>
-      {props.ownedGrids.map((grid) => (
-        <div key={grid.id}>
-          <h2>Grid: {grid.name}</h2>
-          <h4>Invite Code: {grid.code}</h4>
-          <button style={{ marginLeft: 10 }} onClick={() => goToGrid(grid.id)}>
-            Go To {grid.name}
-          </button>
-          <button style={{ marginLeft: 10 }} onClick={() => props.onDeleteGrid(grid)}>
-            Delete Grid
-          </button>
-        </div>
-      ))}
+      <div className="grid-container-home">
+        {props.ownedGrids.map((grid) => (
+          <div className="grid-item-home" key={grid.id}>
+            <h2>Grid: {grid.name}</h2>
+            <h4>Invite Code: {grid.code}</h4>
+            <button style={{ marginLeft: 10 }} onClick={() => goToGrid(grid.id)}>
+              Go To {grid.name}
+            </button>
+            <button style={{ marginLeft: 10 }} onClick={() => props.onDeleteGrid(grid)}>
+              Delete Grid
+            </button>
+          </div>
+        ))}
+      </div>
       <form onSubmit={handleCreateGrid}>
         <h4>Create your own</h4>
         <div>

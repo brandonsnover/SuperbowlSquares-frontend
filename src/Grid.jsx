@@ -12,6 +12,8 @@ export function Grid(props) {
   const [numbersRow, setNumbersRow] = useState([]);
   const [showNumbersColumn, setShowNumbersColumn] = useState(false);
   const sortedSquares = [...props.squares].sort((a, b) => a.id - b.id);
+  const [userSquareCounts, setUserSquareCounts] = useState([]);
+  const [openSquareCount, setOpenSquareCount] = useState(0);
 
   useEffect(() => {
     props.onIndexSquares(pageparams.id);
@@ -87,10 +89,50 @@ export function Grid(props) {
     sortedSquares.splice(i, 0, { id: 9999 + i, location: i / 11, user_id: 1, grid_id: parseInt(pageparams.id) });
   }
   console.log(sortedSquares);
+
+  // create table of square owners
+  useEffect(() => {
+    let totalOwnedSquares = 0;
+
+    const counts = props.squares.reduce((acc, square) => {
+      if (square.user_id && square.user_id.id !== 1) {
+        const { id, username } = square.user_id;
+        if (!acc[id]) {
+          acc[id] = { username, count: 0 };
+        }
+        acc[id].count += 1;
+        totalOwnedSquares += 1;
+      }
+      return acc;
+    }, {});
+
+    const sortedCounts = Object.values(counts).sort((a, b) => b.count - a.count);
+    setUserSquareCounts(sortedCounts);
+    setOpenSquareCount(100 - totalOwnedSquares); // Subtract from total squares (100)
+  }, [props.squares]);
+
   return (
     <div className="grid-padding">
       <h1 className="centered">{gridInfo.name}</h1>
-      <span>code:</span> <span>{gridInfo.code}</span>
+      <h4 className="centered">invite code: {gridInfo.code}</h4>
+      <div className="squares-table">
+        Square Count
+        {/* Table showing number of squares owned by each user */}
+        <table style={{ marginTop: 5, marginBottom: 5 }}>
+          <thead></thead>
+          <tbody>
+            {userSquareCounts.map(({ username, count }) => (
+              <tr key={username}>
+                <td>{username}</td>
+                <td>{count}</td>
+              </tr>
+            ))}
+            {/* Row for open squares */}
+          </tbody>
+        </table>
+        {openSquareCount} Open Squares
+      </div>
+
       {showNumbersColumn ? <p>Winner is: {objectWithLocation.user_id.username}</p> : <></>}
       <div>
         <div className="grid-container">
