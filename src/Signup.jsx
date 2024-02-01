@@ -4,13 +4,6 @@ import { useState } from "react";
 export function Signup() {
   const [errors, setErrors] = useState([]);
 
-  const userid = localStorage.getItem("user_id");
-
-  if (userid) {
-    // If userid return null or an alternative component
-    return null;
-  }
-
   const handleSubmit = (event) => {
     event.preventDefault();
     setErrors([]);

@@ -45,14 +45,21 @@ export function Content() {
     });
   };
 
-  let homepage = (
-    <div>
-      <h1>Welcome to superb-owl !</h1>
-      <Login />
-      <Signup />
-      <GridsIndex ownedGrids={ownedGrids} hasSquareGrids={hasSquareGrids} onDeleteGrid={handleDeleteGrid} />
-    </div>
-  );
+  let homepage;
+  if (localStorage.jwt === undefined) {
+    homepage = (
+      <div>
+        <Login />
+        <Signup />
+      </div>
+    );
+  } else {
+    homepage = (
+      <div>
+        <GridsIndex ownedGrids={ownedGrids} hasSquareGrids={hasSquareGrids} onDeleteGrid={handleDeleteGrid} />
+      </div>
+    );
+  }
 
   useEffect(handleHasSquareGridsIndex, []);
   useEffect(handleOwnedGridsIndex, []);
