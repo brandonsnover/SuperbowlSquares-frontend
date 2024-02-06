@@ -21,7 +21,7 @@ export function Login() {
         localStorage.setItem("jwt", response.data.jwt);
         localStorage.setItem("user_id", response.data.user_id);
         event.target.reset();
-        window.location.href = "/"; // Change this to hide a modal, redirect to a specific page, etc.
+        window.location.href = "/"; //refreshes
       })
       .catch((error) => {
         console.log(error.response);
