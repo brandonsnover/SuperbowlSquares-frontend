@@ -24,7 +24,8 @@
   min-width: 80px;
   min-height: 30px;
   border-image: url('./assets/whitegrass.jpeg') repeat 80;
-  margin: 10px;
+  margin: 8px;
+  padding-top: 4px;
 }
 
 body {
@@ -135,3 +136,23 @@ nav {
   margin: 8px;
 }
 
+.tables-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr; 
+  align-items: start; /* Aligns items to the start of each grid cell */
+}
+
+.scores-table {
+  justify-self: end; /* Aligns the scores table to the end of its grid cell */
+  margin: 8px;
+}
+
+.game-start {
+  margin: 8px;
+  text-align: left;
+}
+
+.table-margins {
+  margin-top: 5; 
+  margin-bottom: 5;
+}
