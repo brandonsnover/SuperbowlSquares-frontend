@@ -14,20 +14,53 @@ export function Grid(props) {
   const sortedSquares = [...props.squares].sort((a, b) => a.id - b.id);
   const [userSquareCounts, setUserSquareCounts] = useState([]);
   const [openSquareCount, setOpenSquareCount] = useState(0);
+  const [showWinnersTable, setShowWinnersTable] = useState(false);
 
   useEffect(() => {
     props.onIndexSquares(pageparams.id);
 
     // Check the current date and time
     const currentTime = new Date();
-    const targetTime = new Date("2024-02-11T18:30:00"); // February 11, 2024, 6:30 PM
+    const targetTime = new Date("2024-02-11T18:30:00");
+    // February 11, 2024, 6:30 PM
 
     if (currentTime > targetTime) {
       setShowNumbersColumn(true);
     }
   }, []);
 
+  // checks current time and if its 4ish hours after kickoff, scores table shows
+  useEffect(() => {
+    props.onIndexSquares(pageparams.id);
+
+    // Check the current date and time
+    const currentTime = new Date();
+    const gameEndTime = new Date("2024-02-11T22:30:00");
+    // February 11, 2024, 10:30 PM
+
+    if (currentTime > gameEndTime) {
+      setShowWinnersTable(true);
+    }
+  }, []);
+
+  // Function to determine if the current time is past the deadline
+  const isPastDeadline = () => {
+    // Adjust timezone as necessary for Eastern Time
+    // Note: This simplistic approach does not account for daylight saving changes.
+    const deadline = new Date("2024-02-11T18:30:00-05:00");
+    // 'YYYY-MM-DDTHH:MM:SS-05:00' for Eastern Time
+    const now = new Date();
+    return now > deadline;
+  };
+
   const handleUpdateSquare = (item) => {
+    if (isPastDeadline()) {
+      console.log("Square selections are now closed.");
+      alert("Square selections are now closed.");
+      return;
+      // Exit the function to prevent further action
+    }
+
     console.log("update square", item.id);
     axios
       .patch(`http://localhost:3000/squares/${item.id}.json`, {
@@ -64,18 +97,18 @@ export function Grid(props) {
     });
   };
 
-  const winningRow = 0;
-  const winningColumn = 0;
+  // const winningRow = 0;
+  // const winningColumn = 0;
 
-  const lastDigitOfWinningColumn = winningColumn.toString().slice(-1);
-  const lastDigitOfWinningRow = winningRow.toString().slice(-1);
+  // const lastDigitOfWinningColumn = winningColumn.toString().slice(-1);
+  // const lastDigitOfWinningRow = winningRow.toString().slice(-1);
 
-  const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
-  const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
+  // const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
+  // const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
 
-  const winningSquare = colIndex * 10 + rowIndex;
+  // const winningSquare = colIndex * 10 + rowIndex;
 
-  const objectWithLocation = sortedSquares.find((obj) => obj.location === winningSquare);
+  // const objectWithLocation = sortedSquares.find((obj) => obj.location === winningSquare);
 
   useEffect(() => {
     handleGridInfo(pageparams.id);
@@ -108,32 +141,291 @@ export function Grid(props) {
 
     const sortedCounts = Object.values(counts).sort((a, b) => b.count - a.count);
     setUserSquareCounts(sortedCounts);
-    setOpenSquareCount(100 - totalOwnedSquares); // Subtract from total squares (100)
+    setOpenSquareCount(100 - totalOwnedSquares);
+    // Subtract from total squares (100)
   }, [props.squares]);
+
+  //Updating points squares
+  const fetchAndSaveScores = async () => {
+    // Fetch scores from the API
+    const options = {
+      method: "GET",
+      url: "https://tank01-nfl-live-in-game-real-time-statistics-nfl.p.rapidapi.com/getNFLBoxScore",
+      params: { gameID: "20240211_SF@KC" },
+      headers: {
+        "X-RapidAPI-Key": import.meta.env.VITE_APP_NFL_TANK01_API_KEY,
+        "X-RapidAPI-Host": "tank01-nfl-live-in-game-real-time-statistics-nfl.p.rapidapi.com",
+      },
+    };
+
+    try {
+      const response = await axios.request(options);
+      // Check if the game hasn't started yet based on the API response
+      if (
+        response.data.body &&
+        response.data.body.error &&
+        response.data.body.error.includes("Game hasn't started yet")
+      ) {
+        console.log("Game hasn't started yet. It will start at 6:30 PM (ET).");
+        return;
+        // Exit the function early if the game hasn't started
+      }
+      const lineScores = response.data.body.lineScore;
+      // Assume response structure is as described and contains lineScore for home and away
+
+      // Map lineScores to your rails expected format
+      const scoresToUpdate = [
+        { id: 1, points: lineScores.home.Q1 || "0" },
+        { id: 2, points: lineScores.home.Q2 || "0" },
+        { id: 3, points: lineScores.home.Q3 || "0" },
+        { id: 4, points: lineScores.home.Q4 || "0" },
+        { id: 5, points: lineScores.away.Q1 || "0" },
+        { id: 6, points: lineScores.away.Q2 || "0" },
+        { id: 7, points: lineScores.away.Q3 || "0" },
+        { id: 8, points: lineScores.away.Q4 || "0" },
+      ];
+
+      // Update scores in the backend
+      scoresToUpdate.forEach((score) => {
+        axios
+          .patch(`http://localhost:3000/scores/${score.id}.json`, { points: score.points })
+          .then((response) => console.log(`Updated score ID ${score.id}`, response.data))
+          .catch((error) => console.error(`Error updating score ID ${score.id}`, error));
+      });
+    } catch (error) {
+      console.error("Error fetching scores from API", error);
+    }
+  };
+
+  //sets tank01 api request to be made on feb 11 6:30 every 20 minutes for 5 hours
+  useEffect(() => {
+    const now = new Date();
+    const startDateTime = new Date("2024-02-11T18:30:00-05:00");
+    // 'YYYY-MM-DDTHH:MM:SS-05:00' for Eastern Time
+    if (now > startDateTime) {
+      // If it's past the start time, adjust the year for the next occurrence
+      startDateTime.setFullYear(now.getFullYear() + 1);
+    }
+    const delayUntilStart = startDateTime - now;
+
+    const fetchInterval = 20 * 60 * 1000;
+    // 20 minutes in milliseconds
+    const duration = 5 * 60 * 60 * 1000;
+    // 5 hours in milliseconds
+    let intervalId;
+
+    setTimeout(() => {
+      fetchAndSaveScores();
+      // Initial fetch
+      intervalId = setInterval(fetchAndSaveScores, fetchInterval);
+
+      // Stop the interval after 5 hours
+      setTimeout(() => {
+        clearInterval(intervalId);
+      }, duration);
+    }, delayUntilStart);
+
+    // Cleanup on component unmount
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+  const [homeScore, setHomeScore] = useState({ Q1: 0, Q2: 0, Q3: 0, Q4: 0, totalPts: 0 });
+  const [awayScore, setAwayScore] = useState({ Q1: 0, Q2: 0, Q3: 0, Q4: 0, totalPts: 0 });
+
+  //updates scores table if possible
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/scores.json")
+      .then((response) => {
+        const scores = response.data;
+        // Assuming scores is an array with a specific order
+        // and the first 4 are home Q1 to Q4 and the next 4 are away Q1 to Q4
+        setHomeScore({
+          Q1: scores[0]?.points || 0,
+          Q2: scores[1]?.points || 0,
+          Q3: scores[2]?.points || 0,
+          Q4: scores[3]?.points || 0,
+          totalPts: scores.slice(0, 4).reduce((acc, curr) => acc + (curr?.points || 0), 0),
+        });
+        setAwayScore({
+          Q1: scores[4]?.points || 0,
+          Q2: scores[5]?.points || 0,
+          Q3: scores[6]?.points || 0,
+          Q4: scores[7]?.points || 0,
+          totalPts: scores.slice(4, 8).reduce((acc, curr) => acc + (curr?.points || 0), 0),
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching scores", error);
+      });
+  }, []);
+
+  //new logic for winning squares
+  const [winningSquare1, setWinningSquare1] = useState(null);
+
+  useEffect(() => {
+    const calculateWinningSquare = () => {
+      const lastDigitOfWinningRow = homeScore.Q1.toString().slice(-1);
+      const lastDigitOfWinningColumn = awayScore.Q1.toString().slice(-1);
+
+      const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
+      const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
+
+      const winningLocation = colIndex * 10 + rowIndex;
+      // Adjust this calculation as necessary.
+      const foundSquare = sortedSquares.find((obj) => obj.location === winningLocation);
+
+      setWinningSquare1(foundSquare);
+    };
+
+    if (homeScore && awayScore) {
+      calculateWinningSquare();
+    }
+  }, [homeScore, awayScore, numbersColumn, numbersRow, sortedSquares]);
+
+  const [winningSquare2, setWinningSquare2] = useState(null);
+
+  useEffect(() => {
+    const calculateWinningSquare = () => {
+      const lastDigitOfWinningRow = homeScore.Q2.toString().slice(-1);
+      const lastDigitOfWinningColumn = awayScore.Q2.toString().slice(-1);
+
+      const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
+      const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
+
+      const winningLocation = colIndex * 10 + rowIndex;
+      // Adjust this calculation as necessary.
+      const foundSquare = sortedSquares.find((obj) => obj.location === winningLocation);
+
+      setWinningSquare2(foundSquare);
+    };
+
+    if (homeScore && awayScore) {
+      calculateWinningSquare();
+    }
+  }, [homeScore, awayScore, numbersColumn, numbersRow, sortedSquares]);
+
+  const [winningSquare3, setWinningSquare3] = useState(null);
+
+  useEffect(() => {
+    const calculateWinningSquare = () => {
+      const lastDigitOfWinningRow = homeScore.Q3.toString().slice(-1);
+      const lastDigitOfWinningColumn = awayScore.Q3.toString().slice(-1);
+
+      const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
+      const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
+
+      const winningLocation = colIndex * 10 + rowIndex;
+      // Adjust this calculation as necessary.
+      const foundSquare = sortedSquares.find((obj) => obj.location === winningLocation);
+
+      setWinningSquare3(foundSquare);
+    };
+
+    if (homeScore && awayScore) {
+      calculateWinningSquare();
+    }
+  }, [homeScore, awayScore, numbersColumn, numbersRow, sortedSquares]);
+
+  const [winningSquare4, setWinningSquare4] = useState(null);
+
+  useEffect(() => {
+    const calculateWinningSquare = () => {
+      const lastDigitOfWinningRow = homeScore.totalPts.toString().slice(-1);
+      const lastDigitOfWinningColumn = awayScore.totalPts.toString().slice(-1);
+
+      const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
+      const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
+
+      const winningLocation = colIndex * 10 + rowIndex;
+      // Adjust this calculation as necessary.
+      const foundSquare = sortedSquares.find((obj) => obj.location === winningLocation);
+
+      setWinningSquare4(foundSquare);
+    };
+
+    if (homeScore && awayScore) {
+      calculateWinningSquare();
+    }
+  }, [homeScore, awayScore, numbersColumn, numbersRow, sortedSquares]);
 
   return (
     <div className="grid-padding">
       <h1 className="centered">{gridInfo.name}</h1>
       <h4 className="centered">invite code: {gridInfo.code}</h4>
-      <div className="squares-table">
-        Square Count
-        {/* Table showing number of squares owned by each user */}
-        <table style={{ marginTop: 5, marginBottom: 5 }}>
-          <thead></thead>
-          <tbody>
-            {userSquareCounts.map(({ username, count }) => (
-              <tr key={username}>
-                <td>{username}</td>
-                <td>{count}</td>
-              </tr>
-            ))}
-            {/* Row for open squares */}
-          </tbody>
-        </table>
-        {openSquareCount} Open Squares
+      <div className="tables-container">
+        <div className="squares-table">
+          Square Count
+          {/* Table showing number of squares owned by each user */}
+          <table className="table-margins">
+            <thead></thead>
+            <tbody>
+              {userSquareCounts.map(({ username, count }) => (
+                <tr key={username}>
+                  <td>{username}</td>
+                  <td>{count}</td>
+                </tr>
+              ))}
+              {/* Row for open squares */}
+            </tbody>
+          </table>
+          {openSquareCount} Open Squares
+        </div>
+        {showNumbersColumn ? (
+          <div className="scores-table">
+            Scores
+            <table className="table-margins">
+              <thead>
+                <tr>
+                  <th></th>
+                  <th> Q1 </th>
+                  <th>Q2</th>
+                  <th>Q3</th>
+                  <th>Q4</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Home</td>
+                  <td>{homeScore.Q1}</td>
+                  <td>{homeScore.Q2}</td>
+                  <td>{homeScore.Q3}</td>
+                  <td>{homeScore.Q4}</td>
+                  <td>{homeScore.totalPts}</td>
+                </tr>
+                <tr>
+                  <td>Away</td>
+                  <td>{awayScore.Q1}</td>
+                  <td>{awayScore.Q2}</td>
+                  <td>{awayScore.Q3}</td>
+                  <td>{awayScore.Q4}</td>
+                  <td>{awayScore.totalPts}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div>
+            <h4 className="game-start">Square choices lock at 6:30pm ET</h4>{" "}
+          </div>
+        )}
       </div>
-
-      {showNumbersColumn ? <p>Winner is: {objectWithLocation.user_id.username}</p> : <></>}
+      <h2 className="centered">
+        {showWinnersTable ? (
+          winningSquare4 ? (
+            <div>
+              <p>1st Quarter Winner is: {winningSquare1.user_id.username}</p>
+              <p>2st Quarter Winner is: {winningSquare2.user_id.username}</p>
+              <p>3rd Quarter Winner is: {winningSquare3.user_id.username}</p>
+              <p>Final Winner is: {winningSquare4.user_id.username}</p>
+            </div>
+          ) : (
+            <p>No winner data available</p>
+          )
+        ) : null}{" "}
+      </h2>
       <div>
         <div className="grid-container">
           {numbersRow.map((number) => (
@@ -155,7 +447,11 @@ export function Grid(props) {
                 <>
                   <button onClick={() => handleUpdateSquare(item)}>{item.location}</button>
                   <p>{item.user_id && item.user_id.username}</p>
-                  {userid == item.user_id.id ? <button onClick={() => handleClick(item)}>Remove Name</button> : <></>}
+                  {!isPastDeadline() && userid == item.user_id.id ? (
+                    <button onClick={() => handleClick(item)}>Remove Name</button>
+                  ) : (
+                    <></>
+                  )}
                 </>
               )}
             </div>
