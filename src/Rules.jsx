@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 export function Rules() {
   return (
     <div className="rules-container">
@@ -11,44 +12,30 @@ export function Rules() {
       <div className="rules-section">
         <h2>Game Setup</h2>
         <ol>
-          <li>Create a 10x10 grid, resulting in 100 squares.</li>
-          <li>Players claim squares by writing their name in the squares of their choice.</li>
-          <li>Once all squares are claimed, numbers 0-9 are randomly assigned to the columns and rows.</li>
+          <li>The board is a 10 x 10 grid, resulting in 100 squares.</li>
+          <li>Once the game kicks off on February 11th, numbers 0-9 are randomly assigned to the columns and rows.</li>
+          <li>The numbers correspond to the last digit of the score of each team.</li>
+          <li>
+            The home team score goes across the top vertically and the away team score goes down the side horizontally.
+          </li>
         </ol>
       </div>
 
       <div className="rules-section">
-        <h2>How to Play</h2>
-        <p>
-          Players win by having the square that corresponds to the last number of each team's score at the end of each
-          quarter.
-        </p>
-      </div>
-
-      <div className="rules-section">
         <h2>Winning the Game</h2>
-        <ol>
+        <ul>
           <li>Winners are typically determined at the end of each quarter.</li>
           <li>The score at the end of each quarter's numbers should match the player's square numbers.</li>
           <li>
             There can be multiple winners if the game goes into overtime or if the score doesn't change between
             quarters.
           </li>
-        </ol>
-      </div>
-
-      <div className="rules-section">
-        <h2>Tips and Strategies</h2>
-        <p>
-          While mostly a game of chance, some prefer choosing squares that align with common football scores (e.g.,
-          numbers like 0, 3, 7).
-        </p>
+        </ul>
       </div>
 
       <div className="rules-section">
         <h2>Variations</h2>
         <ul>
-          <li>Some pools choose to re-randomize numbers at each quarter for added excitement.</li>
           <li>
             Payouts can be divided differently, with some pools offering bigger payouts for halftime and final scores.
           </li>
