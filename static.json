@@ -1,1 +1,1 @@
-{ "root": "build/", "routes": { "/**": "index.html" } }
+{ "root": "dist/", "routes": { "/**": "index.html" } }
