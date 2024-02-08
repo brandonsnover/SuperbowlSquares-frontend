@@ -14,7 +14,7 @@ export function Login() {
     setErrors([]);
     const params = new FormData(event.target);
     axios
-      .post("http://localhost:3000/sessions.json", params)
+      .post(`${import.meta.env.VITE_APP_API_URL}/sessions.json`, params)
       .then((response) => {
         console.log(response.data);
         axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.jwt;

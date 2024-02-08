@@ -12,7 +12,7 @@ export function GridsIndex(props) {
 
   const handleCreateGrid = (event) => {
     event.preventDefault();
-    axios.post("http://localhost:3000/grids.json", { name: newGrid }).then((response) => {
+    axios.post(`${import.meta.env.VITE_APP_API_URL}/grids.json`, { name: newGrid }).then((response) => {
       console.log("grid create", response.data);
       setNewGrid(response.data);
       navigate(`/grid/${response.data.id}`);

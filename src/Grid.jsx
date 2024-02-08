@@ -63,7 +63,7 @@ export function Grid(props) {
 
     console.log("update square", item.id);
     axios
-      .patch(`http://localhost:3000/squares/${item.id}.json`, {
+      .patch(`${import.meta.env.VITE_APP_API_URL}/squares/${item.id}.json`, {
         user_id: userid,
       })
       .then((response) => {
@@ -77,7 +77,7 @@ export function Grid(props) {
 
   const handleClick = (item) => {
     axios
-      .delete(`http://localhost:3000/squares/${item.id}.json`)
+      .delete(`${import.meta.env.VITE_APP_API_URL}/squares/${item.id}.json`)
       .then((response) => {
         console.log(response);
         props.onIndexSquares(pageparams.id);
@@ -88,7 +88,7 @@ export function Grid(props) {
   };
 
   const handleGridInfo = (id) => {
-    axios.get(`http://localhost:3000/grids/${id}.json`).then((response) => {
+    axios.get(`${import.meta.env.VITE_APP_API_URL}/grids/${id}.json`).then((response) => {
       setGridInfo(response.data);
       setNumbersColumn(response.data.columns_digit.toString().split(""));
       let numbers = response.data.rows_digit.toString().split("");
@@ -188,7 +188,7 @@ export function Grid(props) {
       // Update scores in the backend
       scoresToUpdate.forEach((score) => {
         axios
-          .patch(`http://localhost:3000/scores/${score.id}.json`, { points: score.points })
+          .patch(`${import.meta.env.VITE_APP_API_URL}/scores/${score.id}.json`, { points: score.points })
           .then((response) => console.log(`Updated score ID ${score.id}`, response.data))
           .catch((error) => console.error(`Error updating score ID ${score.id}`, error));
       });
@@ -236,7 +236,7 @@ export function Grid(props) {
   //updates scores table if possible
   useEffect(() => {
     axios
-      .get("http://localhost:3000/scores.json")
+      .get(`${import.meta.env.VITE_APP_API_URL}/scores.json`)
       .then((response) => {
         const scores = response.data;
         // Assuming scores is an array with a specific order

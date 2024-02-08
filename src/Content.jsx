@@ -14,7 +14,7 @@ export function Content() {
 
   const handleHasSquareGridsIndex = () => {
     const userId = parseInt(localStorage.getItem("user_id"), 10);
-    axios.get("http://localhost:3000/grids.json").then((response) => {
+    axios.get(`${import.meta.env.VITE_APP_API_URL}/grids.json`).then((response) => {
       const hasSquareGrids = response.data.filter((grid) => grid.users.includes(userId));
       setHasSquareGrids(hasSquareGrids);
     });
@@ -22,7 +22,7 @@ export function Content() {
 
   const handleOwnedGridsIndex = () => {
     const userId = parseInt(localStorage.getItem("user_id"), 10);
-    axios.get("http://localhost:3000/grids.json").then((response) => {
+    axios.get(`${import.meta.env.VITE_APP_API_URL}/grids.json`).then((response) => {
       const ownedGrids = response.data.filter((grid) => grid.owner === userId);
       setOwnedGrids(ownedGrids);
     });
@@ -31,14 +31,14 @@ export function Content() {
   const [squares, setSquares] = useState([]);
 
   const handleIndexSquares = (id) => {
-    axios.get("http://localhost:3000/squares.json", { params: { grid_id: id } }).then((response) => {
+    axios.get(`${import.meta.env.VITE_APP_API_URL}/squares.json`, { params: { grid_id: id } }).then((response) => {
       console.log(response.data);
       setSquares(response.data);
     });
   };
 
   const handleDeleteGrid = (ownedGrid) => {
-    axios.delete(`http://localhost:3000/grids/${ownedGrid.id}.json`).then((response) => {
+    axios.delete(`${import.meta.env.VITE_APP_API_URL}/grids/${ownedGrid.id}.json`).then((response) => {
       console.log(response);
       setOwnedGrids(ownedGrids.filter((g) => g.id !== ownedGrid.id));
       setHasSquareGrids(hasSquareGrids.filter((g) => g.id !== ownedGrid.id));
