@@ -12,7 +12,7 @@ export function Header() {
     event.preventDefault();
 
     try {
-      const response = await axios.get("http://localhost:3000/grids.json");
+      const response = await axios.get(`${import.meta.env.VITE_APP_API_URL}/grids.json`);
       const grids = response.data;
       const grid = grids.find((grid) => grid.code === code.toUpperCase());
 
