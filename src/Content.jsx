@@ -48,7 +48,10 @@ export function Content() {
   let homepage;
   if (localStorage.jwt === undefined) {
     homepage = (
-      <div>
+      <div style={{ textAlign: "center" }}>
+        <h1>Welcome to Superb-Owl Squares</h1>
+        <p>This is a fun little game to play before the big game starts</p>
+        <h4>Login or Signup to get started!</h4>
         <Login />
         <Signup />
       </div>

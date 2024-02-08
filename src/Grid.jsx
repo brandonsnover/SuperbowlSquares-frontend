@@ -370,6 +370,7 @@ export function Grid(props) {
               {/* Row for open squares */}
             </tbody>
           </table>
+          {userSquareCounts.length > 1 ? <></> : <h4>Send the invite code to your friends!</h4>}
           {openSquareCount} Open Squares
         </div>
         {showNumbersColumn ? (
