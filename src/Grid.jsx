@@ -353,6 +353,7 @@ export function Grid(props) {
   return (
     <div className="grid-padding">
       <h1 className="centered">{gridInfo.name}</h1>
+      {userid ? <></> : <h2 className="centered">Login or Signup to select your own squares!</h2>}
       <h4 className="centered">invite code: {gridInfo.code}</h4>
       <div className="tables-container">
         <div className="squares-table">

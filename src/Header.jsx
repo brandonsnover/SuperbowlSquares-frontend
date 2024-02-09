@@ -18,6 +18,8 @@ export function Header() {
 
       if (grid) {
         navigate(`/grid/${grid.id}`);
+        console.log("tryin to go somewhere");
+        window.location.reload();
       } else {
         alert("Grid not found");
       }
