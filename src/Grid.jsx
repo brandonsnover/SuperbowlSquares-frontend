@@ -452,6 +452,7 @@ export function Grid(props) {
     }
   }, [homeScore, awayScore, numbersColumn, numbersRow, sortedSquares]);
 
+  // winner of total points
   const [winningSquare4, setWinningSquare4] = useState(null);
 
   useEffect(() => {
@@ -467,6 +468,52 @@ export function Grid(props) {
       const foundSquare = sortedSquares.find((obj) => obj.location === winningLocation);
 
       setWinningSquare4(foundSquare);
+    };
+
+    if (homeScore && awayScore) {
+      calculateWinningSquare();
+    }
+  }, [homeScore, awayScore, numbersColumn, numbersRow, sortedSquares]);
+
+  //OT winner if there is OT
+  const [winningSquare5, setWinningSquare5] = useState(null);
+
+  useEffect(() => {
+    const calculateWinningSquare = () => {
+      const lastDigitOfWinningRow = homeScore.OT ? homeScore.OT.toString().slice(-1) : "0";
+      const lastDigitOfWinningColumn = awayScore.OT ? awayScore.OT.toString().slice(-1) : "0";
+
+      const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
+      const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
+
+      const winningLocation = colIndex * 10 + rowIndex;
+      // Adjust this calculation as necessary.
+      const foundSquare = sortedSquares.find((obj) => obj.location === winningLocation);
+
+      setWinningSquare5(foundSquare);
+    };
+
+    if (homeScore && awayScore) {
+      calculateWinningSquare();
+    }
+  }, [homeScore, awayScore, numbersColumn, numbersRow, sortedSquares]);
+
+  //4th quarter winner if there is OT
+  const [winningSquare6, setWinningSquare6] = useState(null);
+
+  useEffect(() => {
+    const calculateWinningSquare = () => {
+      const lastDigitOfWinningRow = homeScore.Q4 ? homeScore.Q4.toString().slice(-1) : "0";
+      const lastDigitOfWinningColumn = awayScore.Q4 ? awayScore.Q4.toString().slice(-1) : "0";
+
+      const colIndex = numbersColumn.indexOf(lastDigitOfWinningColumn);
+      const rowIndex = numbersRow.indexOf(lastDigitOfWinningRow);
+
+      const winningLocation = colIndex * 10 + rowIndex;
+      // Adjust this calculation as necessary.
+      const foundSquare = sortedSquares.find((obj) => obj.location === winningLocation);
+
+      setWinningSquare6(foundSquare);
     };
 
     if (homeScore && awayScore) {
@@ -546,8 +593,10 @@ export function Grid(props) {
           winningSquare4 ? (
             <div>
               <p>1st Quarter Winner is: {winningSquare1.user_id.username}</p>
-              <p>2st Quarter Winner is: {winningSquare2.user_id.username}</p>
+              <p>2nd Quarter Winner is: {winningSquare2.user_id.username}</p>
               <p>3rd Quarter Winner is: {winningSquare3.user_id.username}</p>
+              {winningSquare5 && <p>4th Quarter Winner is: {winningSquare6.user_id.username}</p>}
+              {winningSquare5 && <p>OT Winner is: {winningSquare5.user_id.username}</p>}
               <p>Final Winner is: {winningSquare4.user_id.username}</p>
             </div>
           ) : (
